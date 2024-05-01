@@ -77,9 +77,20 @@ func (schema Schema) LookUpField(name string) *Field {
 	if field, ok := schema.FieldsByDBName[name]; ok {
 		return field
 	}
+	for key, field := range schema.FieldsByDBName {
+		if strings.EqualFold(key, name) {
+			return field
+		}
+	}
 	if field, ok := schema.FieldsByName[name]; ok {
 		return field
 	}
+	for key, field := range schema.FieldsByName {
+		if strings.EqualFold(key, name) {
+			return field
+		}
+	}
+
 	return nil
 }
 
@@ -99,6 +110,11 @@ func (schema Schema) LookUpFieldByBindName(bindNames []string, name string) *Fie
 		find := strings.Join(bindNames[:i], ".") + "." + name
 		if field, ok := schema.FieldsByBindName[find]; ok {
 			return field
+		}
+		for key, field := range schema.FieldsByBindName {
+			if strings.EqualFold(key, find) {
+				return field
+			}
 		}
 	}
 	return nil
