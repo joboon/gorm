@@ -74,7 +74,7 @@ func (schema *Schema) parseRelation(field *Field) *Relationship {
 
 	cacheStore := schema.cacheStore
 
-	if relation.FieldSchema, err = getOrParse(fieldValue, cacheStore, schema.namer); err != nil {
+	if relation.FieldSchema, err = getOrParse(fieldValue, cacheStore, schema.namer, schema.FieldsCaseInsensitive); err != nil {
 		schema.err = err
 		return nil
 	}
@@ -355,8 +355,8 @@ func (schema *Schema) buildMany2ManyRelation(relation *Relationship, field *Fiel
 		Tag:  `gorm:"-"`,
 	})
 
-	if relation.JoinTable, err = Parse(reflect.New(reflect.StructOf(joinTableFields)).Interface(), schema.cacheStore,
-		schema.namer); err != nil {
+	if relation.JoinTable, err = ParseWithCaseInsensitivity(reflect.New(reflect.StructOf(joinTableFields)).Interface(), schema.cacheStore,
+		schema.namer, schema.FieldsCaseInsensitive); err != nil {
 		schema.err = err
 	}
 	relation.JoinTable.Name = many2many
