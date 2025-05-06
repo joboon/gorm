@@ -365,8 +365,15 @@ func TestLookupField(t *testing.T) {
 	field := product.LookUpField("ProductID")
 	assert.NotNil(t, field)
 	field = product.LookUpField("productid")
-	assert.NotNil(t, field)
+	assert.Nil(t, field)
 	field = product.LookUpField("product_code")
+	assert.NotNil(t, field)
+	field = product.LookUpField("PRODUCT_CODE")
+	assert.Nil(t, field)
+
+	// Check case insensitivity
+	product.FieldsCaseInsensitive = true
+	field = product.LookUpField("productid")
 	assert.NotNil(t, field)
 	field = product.LookUpField("PRODUCT_CODE")
 	assert.NotNil(t, field)
@@ -387,6 +394,15 @@ func TestLookupFieldByBindName(t *testing.T) {
 	}
 	field := product.LookUpFieldByBindName([]string{"Product", "ID"}, "ID")
 	assert.NotNil(t, field)
+	field = product.LookUpFieldByBindName([]string{"Product", "ID"}, "id")
+	assert.Nil(t, field)
+	field = product.LookUpFieldByBindName([]string{"Product", "id"}, "id")
+	assert.Nil(t, field)
+	field = product.LookUpFieldByBindName([]string{"product", "id"}, "id")
+	assert.Nil(t, field)
+
+	// Check case insensitivity
+	product.FieldsCaseInsensitive = true
 	field = product.LookUpFieldByBindName([]string{"Product", "ID"}, "id")
 	assert.NotNil(t, field)
 	field = product.LookUpFieldByBindName([]string{"Product", "id"}, "id")
