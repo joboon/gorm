@@ -132,7 +132,7 @@ type Session struct {
 
 // Open initialize db session based on dialector
 func Open(dialector Dialector, opts ...Option) (db *DB, err error) {
-	config := &Config{}
+	config := &Config{CaseInsensitiveSchemaFields: true}
 
 	sort.Slice(opts, func(i, j int) bool {
 		_, isConfig := opts[i].(*Config)
@@ -271,9 +271,7 @@ func (db *DB) Session(config *Session) *DB {
 		txConfig.PropagateUnscoped = true
 	}
 
-	if config.CaseInsensitiveSchemaFields {
-		txConfig.CaseInsensitiveSchemaFields = true
-	}
+	txConfig.CaseInsensitiveSchemaFields = true
 
 	if config.Context != nil || config.PrepareStmt || config.SkipHooks {
 		tx.Statement = tx.Statement.clone()
